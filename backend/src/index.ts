@@ -3,16 +3,26 @@ import {z} from 'zod';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { User } from './models/Users'
+import dotenv from 'dotenv';
+import cors from 'cors';
+
+dotenv.config();
 
 const app = express();
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
 // Db connection
-mongoose.connect('mongodb+srv://admin:123sujalsingh@cluster0.ky93nr4.mongodb.net/'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bookmarkai';
+const PORT = process.env.PORT || 3000;
+
+mongoose.connect(MONGODB_URI
 ).then(()=>{
-    console.log("Connected...")
+    console.log("Connected to MongoDB...");
 }).catch(err=>{
-    console.log("Not Connected...",err);
+    console.log("Not Connected to MongoDB...",err);
 });
 
 // zod Schema
@@ -41,6 +51,7 @@ app.post('/api/v1/signup',async(req,res)=>{
         res.status(409).json({
             error:"User already exists"
         });
+        return;
     }
 
     // Hash the password
@@ -54,7 +65,7 @@ app.post('/api/v1/signup',async(req,res)=>{
     // Response of the request
     res.status(200).json({
         message:"Signed up",
-        data:{name:password}
+        data:{name:name}
     });
 });
 
@@ -64,13 +75,37 @@ app.post('/api/v1/signin',async(req,res)=>{
         res.status(401).json({
             "error" : result.error
         });
+        return;
     }
     const { name,password } = result.data;
-    const userExists = User.findOne()
+    
+    // Check if user exists
+    const userExists = await User.findOne({name});
+    if(!userExists){
+        res.status(404).json({
+            error: "User not found"
+        });
+        return;
+    }
+    
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, userExists.password);
+    if(!isValidPassword){
+        res.status(401).json({
+            error: "Invalid credentials"
+        });
+        return;
+    }
+    
+    // Successful signin
+    res.status(200).json({
+        message: "Signed in successfully",
+        data: { name: userExists.name }
+    });
 })
 
  
 
-app.listen(3000,()=>{
-    console.log("Sever is running");
+app.listen(PORT,()=>{
+    console.log(`Server is running on port ${PORT}`);
 });
