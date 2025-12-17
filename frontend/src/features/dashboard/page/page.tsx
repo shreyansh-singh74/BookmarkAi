@@ -1,7 +1,9 @@
+import DashboardNav from "../components/DashboardNav"
+
 export default function DashboardPage(){
   return(
-    <div>
-      <h1>Dashboard</h1>
+    <div className="flex flex-col h-screen w-full">
+      <DashboardNav />
     </div>
   )
 }
