@@ -2,14 +2,14 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { User } from '../models/Users';
-import { userSchema } from '../types/auth.types';
+import { userSchema,signinSchema } from '../types/auth.types';
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, password }: z.infer<typeof userSchema> = req.body;
+        const { name,email, password }: z.infer<typeof userSchema> = req.body;
 
         // Check if user already exists
-        const existingUser = await User.findOne({ name });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             res.status(409).json({
                 error: "User already exists"
@@ -21,13 +21,13 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Store to database
-        const user = new User({ name, password: hashedPassword });
+        const user = new User({ name,email, password: hashedPassword });
         await user.save();
 
         // Response
         res.status(200).json({
             message: "Signed up",
-            data: { name }
+            data: { name,email }
         });
     } catch (error) {
         res.status(500).json({
@@ -38,10 +38,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
 
 export const signin = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, password }: z.infer<typeof userSchema> = req.body;
+        const { email, password }: z.infer<typeof userSchema> = req.body;
 
         // Check if user exists
-        const userExists = await User.findOne({ name });
+        const userExists = await User.findOne({ email });
         if (!userExists) {
             res.status(404).json({
                 error: "User not found"

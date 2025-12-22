@@ -1,9 +1,9 @@
-import AuthForm from "../components/AuthForm"
+import SignUpForm from "../components/SignUpForm"
 
 export default function SignUp(){
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <AuthForm type="register" />
+            <SignUpForm />
         </div>
     )
 }

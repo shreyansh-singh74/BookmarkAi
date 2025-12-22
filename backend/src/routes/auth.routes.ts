@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { signup, signin } from '../controllers/auth.controller';
 import { validate } from '../middleware/validation';
-import { userSchema } from '../types/auth.types';
+import { signinSchema, userSchema } from '../types/auth.types';
 
 const router = Router();
 
@@ -9,7 +9,7 @@ const router = Router();
 router.post('/signup', validate(userSchema), signup);
 
 // POST /api/v1/signin
-router.post('/signin', validate(userSchema), signin);
+router.post('/signin', validate(signinSchema), signin);
 
 export default router;
 
