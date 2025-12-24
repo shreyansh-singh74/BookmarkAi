@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useRegister } from "../hooks/useRegister";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("");
@@ -7,6 +9,8 @@ export default function SignUpForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const {register,isLoading} = useRegister();
+  const navigate = useNavigate();
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -15,28 +19,21 @@ export default function SignUpForm() {
       return;
     }
 
-    try {
-      const res = await fetch("http://localhost:3000/api/v1/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name,email, password }),
-      });
+    try {how 
+      await register({name,email,password});
+      
+      // for clearing the form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error response:", errorData);
-        toast.error(errorData.message || "Signup failed");
-        return;
-      }
+      // redirect
+      navigate("/dashboard")
 
-      const data= await res.json();
 
-      console.log("Success response: ",data);
-      toast.success("Account created successfully");
+    }catch(error){
 
-    } catch(error) {
-      console.error("Fetch error: ",error);
-      toast.error("Something went wrong");
     }
   }
 
@@ -65,6 +62,8 @@ export default function SignUpForm() {
           className="border rounded p-2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+          required
         />
         <input
           type="password"
@@ -72,6 +71,8 @@ export default function SignUpForm() {
           className="border rounded p-2"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+          required
         />
 
         <input
@@ -80,9 +81,14 @@ export default function SignUpForm() {
           className="border rounded p-2"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          disabled={isLoading}
+          required
         />
 
-        <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer">
+        <button 
+          className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
+          disabled={isLoading}
+        >
           Sign-Up
         </button>
       </div>
