@@ -1,14 +1,16 @@
-import AppRouter from './router'
+import { AuthProvider } from "../features/auth/context/AuthContext";
+import AppRouter from "./router";
 
-import {Toaster } from "sonner"
+import { Toaster } from "sonner";
 function App() {
   return (
     <>
-      <Toaster position='top-right'/>
-      <AppRouter />
+      <AuthProvider>
+        <Toaster position="top-right" />
+        <AppRouter />
+      </AuthProvider>
     </>
-  )
+  );
 }
 
 export default App;
-

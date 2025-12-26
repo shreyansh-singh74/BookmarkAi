@@ -10,3 +10,12 @@ export const signinSchema = z.object({
     email: z.email("Invalid email format"),
     password: z.string().min(3,"Minimum 8 length").max(20,"Maximum is 20 length")
 })
+
+export interface authResponse{
+    message: string;
+    token: string;
+    data: {
+        name: string;
+        email: string;
+    }
+}

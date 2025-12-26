@@ -14,6 +14,7 @@ export interface signInData {
 
 export interface authResponse {
   message: string;
+  token:string;
   data: {
     name: string;
     email: string;

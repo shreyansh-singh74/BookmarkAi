@@ -19,7 +19,7 @@ export default function SignUpForm() {
       return;
     }
 
-    try {how 
+    try {
       await register({name,email,password});
       
       // for clearing the form
