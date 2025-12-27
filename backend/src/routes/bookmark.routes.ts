@@ -1,18 +1,20 @@
-import { Router,Response } from "express";
-import { authenticateToken, AuthRequest } from "../middleware/auth.middleware";
+import { Router } from "express";
+import { authenticateToken } from "../middleware/auth.middleware";
+import {
+  createBookmark,
+  getBookmarks,
+  getBookmarkById,
+  updateBookmark,
+  deleteBookmark,
+} from "../controllers/bookmark.controller";
 
 const router = Router();
 
-// Protected route example
-router.get(
-  "/bookmarks",
-  authenticateToken,
-  (req:AuthRequest, res:Response) => {
-    res.json({
-      message: "Your bookmarks",
-      user: req.user,
-    });
-  }
-);
+// All routes require authentication
+router.post("/bookmarks", authenticateToken, createBookmark);
+router.get("/bookmarks", authenticateToken, getBookmarks);
+router.get("/bookmarks/:id", authenticateToken, getBookmarkById);
+router.put("/bookmarks/:id", authenticateToken, updateBookmark);
+router.delete("/bookmarks/:id", authenticateToken, deleteBookmark);
 
 export default router;
