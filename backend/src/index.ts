@@ -1,12 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
 
 import connectDB from "./config/database"
 import authRoutes from './routes/auth.routes';
 import bookmarkRoutes from './routes/bookmark.routes'
 
-dotenv.config();
+// Load .env file from the project root (backend directory)
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const app = express();
 

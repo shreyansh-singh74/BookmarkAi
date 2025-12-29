@@ -7,7 +7,10 @@ import jwt from "jsonwebtoken";
 
 // Helper Function to generate JWT
 const generateJWT = (userId: string, name: string, email: string): string => {
-  const secret = process.env.JWT_SECRET!;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET environment variable is not set. Please configure it in your .env file.");
+  }
   const expiresIn = process.env.JWT_EXPIRES_IN || "7d";
   
   return jwt.sign(
@@ -21,8 +24,11 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password }: z.infer<typeof userSchema> = req.body;
 
+    // Normalize email to lowercase for consistent checking
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       res.status(409).json({
         error: "User already exists",
@@ -34,7 +40,7 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Store to database
-    const user = new User({ name, email, password: hashedPassword });
+    const user = new User({ name, email: normalizedEmail, password: hashedPassword });
     await user.save();
 
     // Generae JWT
@@ -44,9 +50,10 @@ export const signup = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({
       message: "Signed up successfully",
       token,
-      data: { name, email },
+      data: { name, email: normalizedEmail },
     });
   } catch (error) {
+    console.error("Signup error:", error);
     res.status(500).json({
       error: "Internal server error",
     });
@@ -57,8 +64,11 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password }: z.infer<typeof userSchema> = req.body;
 
+    // Normalize email to lowercase for consistent checking
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Check if user exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: normalizedEmail });
     if (!userExists) {
       res.status(404).json({
         error: "User not found",
@@ -77,7 +87,7 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
 
 
     // Generate JWT token
-    const token = generateJWT(userExists.id.toString(),email,userExists.name);
+    const token = generateJWT(userExists.id.toString(),userExists.email,userExists.name);
 
 
 
@@ -88,6 +98,7 @@ export const signin = async (req: Request, res: Response): Promise<void> => {
       data: { name: userExists.name },
     });
   } catch (error) {
+    console.error("Signin error:", error);
     res.status(500).json({
       error: "Internal server error",
     });

@@ -12,13 +12,23 @@ interface Bookmark {
   createdAt: string;
 }
 
-export function BookmarkList() {
+interface BookmarkListProps{
+  onBookmarkAdded?: () => void;
+}
+
+export function BookmarkList({ onBookmarkAdded }:BookmarkListProps) {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchBookmarks();
   }, []);
+
+  useEffect(()=>{
+    if(onBookmarkAdded){
+      fetchBookmarks();
+    }
+  },[onBookmarkAdded]);
 
   const fetchBookmarks = async () => {
     try {

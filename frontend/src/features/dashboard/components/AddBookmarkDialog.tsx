@@ -2,13 +2,17 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Dialog, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import {
+import { 
+  Dialog, 
   DialogContent,
   DialogDescription,
+  DialogFooter, 
+  DialogHeader, 
   DialogTitle,
-} from "@radix-ui/react-dialog";
+  DialogTrigger 
+} from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
+
 
 export function AddBookmarkDialog() {
   const [open, setOpen] = useState(false);
