@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Trash2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { BACKEND_URL } from "@/utils/api";
 
 interface Bookmark {
   _id: string;
@@ -33,7 +34,7 @@ export function BookmarkList({ onBookmarkAdded }:BookmarkListProps) {
   const fetchBookmarks = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch("http://localhost:3000/api/v1/bookmarks", {
+      const response = await fetch(`${BACKEND_URL}/api/v1/bookmarks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -57,7 +58,7 @@ export function BookmarkList({ onBookmarkAdded }:BookmarkListProps) {
     try {
       const token = localStorage.getItem("auth_token");
       const response = await fetch(
-        `http://localhost:3000/api/v1/bookmarks/${id}`,
+        `${BACKEND_URL}/api/v1/bookmarks/${id}`,
         {
           method: "DELETE",
           headers: {

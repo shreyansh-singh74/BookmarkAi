@@ -1,5 +1,7 @@
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api/v1";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
+console.log('🔗 Backend URL:', API_BASE_URL);
 
 export interface signUpData {
   email: string;
@@ -24,7 +26,7 @@ export interface authResponse {
 export const authApi = {
   // signup Api
   signUp: async (data: signUpData): Promise<authResponse> => {
-    const res = await fetch(`${API_BASE_URL}/signup`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/signup`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -38,7 +40,7 @@ export const authApi = {
 
   // signin Api
   SignIn: async (data: signInData): Promise<authResponse> => {
-    const res = await fetch(`${API_BASE_URL}/signin`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

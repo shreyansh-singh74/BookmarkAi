@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { BACKEND_URL } from "@/utils/api";
 import { 
   Dialog, 
   DialogContent,
@@ -31,7 +32,7 @@ export function AddBookmarkDialog() {
       // token from localStorage
       const token = localStorage.getItem("auth_token");
 
-      const res = await fetch("http://localhost:3000/api/v1/bookmarks", {
+      const res = await fetch(`${BACKEND_URL}/api/v1/bookmarks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
