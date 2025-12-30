@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { User } from "../models/Users";
-import { userSchema, signinSchema } from "../types/auth.types";
+import { userSchema } from "../types/auth.types";
 import jwt from "jsonwebtoken";
 
-// Helper Function to generate JWT
+
 const generateJWT = (userId: string, name: string, email: string): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {

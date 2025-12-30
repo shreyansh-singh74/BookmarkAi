@@ -12,6 +12,6 @@ const connectDB = async () : Promise<void> =>{
     }catch(error){
         console.log("Error is coming: ",error);
     }
-}   
+}
 
 export default connectDB;

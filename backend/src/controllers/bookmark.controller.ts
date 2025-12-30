@@ -7,7 +7,7 @@ export const createBookmark = async (req: AuthRequest, res: Response): Promise<v
   try {
     const { title, url, description, tags } = req.body;
     const userId = req.user?.userId;
-
+    
     if (!userId) {
       res.status(401).json({ error: 'Unauthorized' });
       return;
